@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+   <head>
+   <meta charset="utf-8">
+   <title>BTC-USDT价格</title>
+    
+      <script type="text/javascript">
+         function WebSocketTest()
+         {
+            if ("WebSocket" in window)
+            {
+               console.log("您的浏览器支持 WebSocket!");
+               
+               // 打开一个 web socket
+               var ws = new WebSocket("wss://wspri.okex.com:8443/ws/v5/public");
+                
+               ws.onopen = function()
+               {
+                  // Web Socket 已连接上，使用 send() 方法发送数据
+				  //{"op": "subscribe","args":[{"channel":"instruments","instType":"FUTURES"},{"channel":"instruments","instType":"OPTION"},{"channel":"itn-status"},{"channel":"books","instId":"BTC-USDT"},{"channel":"tickers","instId":"BTC-USDT"},{"channel":"cup-tickers-3s","ccy":"USDT"},{"channel":"mark-price","instId":"BTC-USDT"},{"channel":"index-tickers","instId":"BTC-USDT"}]}
+				  ws.send("{\"op\": \"subscribe\",\"args\":[{\"channel\":\"instruments\",\"instType\":\"FUTURES\"},{\"channel\":\"instruments\",\"instType\":\"OPTION\"},{\"channel\":\"itn-status\"},{\"channel\":\"books\",\"instId\":\"BTC-USDT\"},{\"channel\":\"tickers\",\"instId\":\"BTC-USDT\"},{\"channel\":\"cup-tickers-3s\",\"ccy\":\"USDT\"},{\"channel\":\"mark-price\",\"instId\":\"BTC-USDT\"},{\"channel\":\"index-tickers\",\"instId\":\"BTC-USDT\"}]}");
+				  ws.send("{\"op\":\"subscribe\",\"args\":[{\"channel\":\"candle15m\",\"instId\":\"BTC-USDT\"}]}");
+               };
+                
+               ws.onmessage = function (evt) 
+               { 
+                  var received_msg = evt.data;
+                  //console.log("received_msg:",received_msg, " evt:", evt);
+				  if (received_msg != null) {
+					var jsonMsg = JSON.parse(received_msg);
+					if (jsonMsg["arg"]["channel"] == "mark-price") {
+						if (jsonMsg["data"] != null && jsonMsg["data"][0] != null && jsonMsg["data"][0]["markPx"] != null) {
+							price = jsonMsg["data"][0]["markPx"];
+							document.title = price + " BTC-USDT价格"
+						}
+						
+					}
+				  }
+               };
+                
+               ws.onclose = function()
+               { 
+                  // 关闭 websocket
+                  alert("连接已关闭..."); 
+               };
+            }
+            
+            else
+            {
+               // 浏览器不支持 WebSocket
+               alert("您的浏览器不支持 WebSocket!");
+            }
+         }
+		 WebSocketTest();
+      </script>
+        
+   </head>
+   <body>
+   
+      <div id="sse">
+         <a>查询中...</a>
+      </div>
+      
+   </body>
+</html>
