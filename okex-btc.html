@@ -31,7 +31,7 @@
 					if (jsonMsg["arg"]["channel"] == "mark-price") {
 						if (jsonMsg["data"] != null && jsonMsg["data"][0] != null && jsonMsg["data"][0]["markPx"] != null) {
 							price = jsonMsg["data"][0]["markPx"];
-							document.title = price + " BTC-USDT价格"
+							document.title = price + " BTC-USDT"
 						}
 						
 					}
@@ -41,7 +41,8 @@
                ws.onclose = function()
                { 
                   // 关闭 websocket
-                  alert("连接已关闭..."); 
+                  //alert("连接已关闭..."); 
+				  ws = new WebSocket("wss://wspri.okex.com:8443/ws/v5/public");
                };
             }
             
